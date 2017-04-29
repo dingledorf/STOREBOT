@@ -1,14 +1,18 @@
 if(window.location.href == "https://shop.exclucitylife.com/products.json") {
-	setInterval(function() {
+	var clearId = setInterval(function() {
+		console.clear();
+	}, 5000);		
+	
+	var intervalId = setInterval(function() {
 		$.ajax({
 		  'url': 'https://shop.exclucitylife.com/products.json',
 		  'dataType': 'json',
 		  'success': function(data) {			  
-			  var products = data.products.slice(0, 10);			  
+			  var products = data.products.slice(0, 7);			  
 			  $.each(products, function(i, product) {			
 				console.log(product);				
-				//916832-710 555088-007
-			    if( (product.body_html && product.body_html.includes("555088-007"))
+				//916832-710 555088-007 881109-104 CP9366
+			    if( (product.body_html && product.body_html.includes("CP9366"))
 				  ) {
 				  var option = "2";
 				  $.each(product.options, function(i, x) {
@@ -31,8 +35,16 @@ if(window.location.href == "https://shop.exclucitylife.com/products.json") {
 					  'complete': function(x) {
 						  console.log(x);
 						  if(x.status == 200) {
-							window.location.assign('https://shop.exclucitylife.com/checkout');
+							window.location.assign('https://shop.exclucitylife.com/checkout');							
 						  }						  
+						  if(x.status == 429) {
+							console.log("You're banned");							
+						  }
+						  if(x.status == 422) {
+							console.log("Sold out");
+						  }
+						  clearInterval(clearId);
+						  clearInterval(intervalId);
 					  }
 				  })
 				  return false;
@@ -40,8 +52,5 @@ if(window.location.href == "https://shop.exclucitylife.com/products.json") {
 			  })		  
 		  }
 		});
-	}, 1000);	
-	setInterval(function() {
-		console.clear();
-	}, 5000);	
+	}, 2000);	
 }
